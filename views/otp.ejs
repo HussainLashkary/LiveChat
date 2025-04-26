@@ -1,0 +1,26 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <form action="/auth/checkOtp" method="post">
+        <h1>one time code:</h1>
+        <% if (errorMessage) {%>
+            <script>
+                alert("<%= errorMessage %>");
+            </script>
+        <%} else if (message) {%>
+            <script>
+                alert("<%= message %>");
+            </script>
+        <%}%>
+        <input type="hidden" name="mobile" value="<%= user.mobile %>">
+        <br>
+        <input type="text" name="code" id="code">
+        <br>
+        <button type="submit">Confirm</button>
+    </form>
+</body>
+</html>

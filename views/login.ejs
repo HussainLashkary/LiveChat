@@ -1,0 +1,23 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <form action="/auth/sendOtp" method="post">
+        <%if( message ) {%>
+            <script>alert("<%= message %>")</script>
+        <%}%>
+        <h1>fullname:</h1>
+        <input type="text" name="fullName" id="fullName" placeholder="must contain one char">
+        <br>
+        <h2>mobile:</h2>
+        <input type="text" name="mobile" id="mobile" placeholder="enter ir phone">
+        <br/>
+        <br/>
+        <button type="submit">Login</button>
+    </form>
+</body>
+
+</html>

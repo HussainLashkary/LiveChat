@@ -1,0 +1,7 @@
+1- create user authentication first with mobile phone and otp code register and login
+2- second after login and register redirect user to chat page
+3- create chat and message schema
+4- create socket file and connect to server
+5- create chat page with user list and chat box and send message function and groups name show
+
+change possible functions to function expressions!!
