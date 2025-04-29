@@ -8,14 +8,16 @@ const mainRouter = require("./src/app.routes");
 const cookieParser = require("cookie-parser")
 const session = require("express-session");
 const { errorHandler, notFoundHandler } = require("./src/middleware/error.handler");
-const { initialSocket } = require("./src/utils/initSocket");
 const socketHandler = require("./src/modules/socket");
-const io = initialSocket(server);
+const { initializeSocket } = require("./src/utils/initSocket");
+const io = initializeSocket(server);
 socketHandler(io);
 
 
 app.set("view engine", "ejs");
-app.use(express.static("./"));
+app.set("views", "./views");
+app.use(express.static("public"));
+app.use("/uploads", express.static("uploads"));
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 app.use(session({
@@ -30,10 +32,15 @@ app.use(mainRouter);
 //call db config here
 require("./src/config/dbConfig");
 
-// Error handling middleware
-app.use(errorHandler);
-app.use(notFoundHandler);
 
 server.listen(port, () => {
     console.log("server run on http://localhost:" + port);
 });
+
+app.use((req, res, next) => {
+    console.log(`Request received: ${req.method} ${req.url}`);
+    next();
+});
+// Error handling middleware
+app.use(errorHandler);
+app.use(notFoundHandler);
