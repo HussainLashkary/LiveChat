@@ -37,10 +37,10 @@ server.listen(port, () => {
     console.log("server run on http://localhost:" + port);
 });
 
-app.use((req, res, next) => {
-    console.log(`Request received: ${req.method} ${req.url}`);
-    next();
-});
 // Error handling middleware
+app.get('/favicon.ico', (req, res) => {
+    res.status(204).end();
+});
+
 app.use(errorHandler);
 app.use(notFoundHandler);
