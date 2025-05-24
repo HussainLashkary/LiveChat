@@ -3,6 +3,21 @@ body {
     display: flex;
     font-family: Arial, sans-serif;
   }
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.user-info .profile-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
   
   .sidebar {
     width: 20%;
@@ -129,27 +144,36 @@ body {
   .message {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     margin: 10px 0;
     padding: 10px;
-    background: #dcdde1;
     border-radius: 5px;
     max-width: 70%;
   }
   
   .message.sent {
-    background: #4cd137;
+    background: green;
     color: white;
     margin-left: auto;
   }
+
+  .message.received {
+    background: gray;
+    margin-right: auto;
+}
   
-  .message .profile-image {
+  .message img {
     width: 30px;
     height: 30px;
     border-radius: 50%;
     object-fit: cover;
-    background-color: #ccc;
     margin-right: 10px;
   }
+
+  .messages ul {
+    overflow-y: auto;
+    max-height: 100%;
+}
   
   .input-area {
     display: flex;

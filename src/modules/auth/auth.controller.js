@@ -46,14 +46,15 @@ async function sendOtpHandler(req, res, next) {
 async function checkOtpHandler(req, res, next) {
     try {
         const {mobile, code} = req.body;
-        const token = await checkOtp(mobile, code);
+        const result = await checkOtp(mobile, code);
         
-        res.cookie("access_token", token, {
+        res.cookie("access_token", result.accessToken, {
             httpOnly: true,
             secure: true,
             maxAge: 3600000 //1hour
         });
 
+        req.session.user = result.user;
         return res.redirect("/chat")
     } catch (error) {
         if ( error ) {

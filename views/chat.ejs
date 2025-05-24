@@ -24,19 +24,28 @@
 
   <div class="chat-area">
     <div class="chat-header">
-      <span class="online-count" id="online-count">
-        
-      </span>
-      <div class="room-header" id="room-header">
-        
+      <span class="online-count" id="online-count"></span>
+      
+
+      <div class="user-info">
+          <input type="hidden"  id="userId" value="<%=req.session.user.id%>">
+          <img src="/uploads/cooking.jpg" alt="User Profile" class="profile-image" id="userImage"/>
+          <span id="username">
+            <%if(req.session?.user?.fullName){%>
+              <%=req.session.user.fullName%>
+            <%} else if(req.session.user?.mobile) {%>
+              <%=req.session.user?.mobile%>
+            <%} else {%>
+              user
+            <%}%>
+          </span>
       </div>
+  
+      <div class="room-header" id="room-header"></div>
     </div>
     <div class="messages">
-      <ul>
-        <li class="message received">
-          <img src="/uploads/1745463939012-1thLayers.JPG" alt="User Profile" class="profile-image" />
-          <span>Hello! Welcome to the chat.</span>
-        </li>
+      <ul id="message-container">
+        
       </ul>
     </div>
     <div class="input-area">
@@ -44,22 +53,22 @@
       <button id="sendButton" type="submit">Send</button>
     </div>
   </div>
-
+  
   <script src="/socket.io/socket.io.js"></script>
   <script>
     const spacesButton = document.querySelector('.spaces-button');
     const spacesList = document.getElementById('spacesList');
     const namespacesContainer = document.getElementById('namespaces');
-
+    
     // Show namespace list on hover
     spacesButton.addEventListener("mouseover", () => {
       spacesList.style.display = "block";
     });
-
+    
     spacesList.addEventListener("mouseleave", () => {
       spacesList.style.display = "none";
     });
-
+    
     // Event delegation to handle namespace selection
     namespacesContainer.addEventListener("click", (event) => {
       if (event.target.tagName === "LI") {
@@ -67,9 +76,9 @@
         spacesList.style.display = "none";
       }
     });
-  </script>
+    </script>
 
-  <script src="/dist/socket.js"></script>
+<script src="/dist/socket.js"></script>
 </body>
 </html>
 

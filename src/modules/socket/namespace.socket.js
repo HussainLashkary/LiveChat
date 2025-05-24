@@ -20,9 +20,8 @@ const createNamespaceConnection = async (io) => {
                     await getCountOfOnlineUsers(io, namespace.endpoint, room.name)
                 }
                 socket.join(room.name);
-                await getCountOfOnlineUsers(io, namespace.endpoint, room.name);
-                confirmMessage(socket, namespace.endpoint, room.name);
-                getNewMessage(socket);
+                await getCountOfOnlineUsers(io, namespace.endpoint, room.name)
+                getNewMessage(socket, io);
                 socket.on("disconnect", async () => {
                     await getCountOfOnlineUsers(io, namespace.endpoint, room.name)
                 })
@@ -36,34 +35,22 @@ const getCountOfOnlineUsers = async (io, endpoint, roomName) => {
     io.of(`/${endpoint}`).in(roomName).emit("countOfOnlineUsers", Array.from(onlineUsers).length);
 }
 
-const getNewMessage = (socket) => {
+const getNewMessage = (socket, io) => {
     socket.on("newMessage", async data => {
-        const { message, roomName, endpoint } = data;
+        const { message, roomName, endpoint, sender } = data;
         await conversationModel.updateOne({endpoint, "rooms.name": roomName}, {
             $push: {
                 "rooms.$.messages": {
-                    sender: "6808caf76dba51be12c9a12d",
+                    sender,
                     message,
                     dateTime: Date.now()
                 }
             }
         })
+        io.of(`/${endpoint}`).in(roomName).emit("confirmMessage", data)
     })
 }
-const confirmMessage = async (socket, endpoint, roomName) => {
-    const conversation = await conversationModel.aggregate([
-        { $match: { endpoint } },
-        { $unwind: "$rooms" },  // Flatten rooms array
-        { $match: { "rooms.name": roomName } } // Match specific room
-    ]);
 
-    if (!conversation.length) {
-        socket.emit("error", "Room not found");
-        return;
-    }
-    console.log(conversation[0].rooms.messages)
-    socket.emit("confirmMessage", conversation[0].rooms.messages);
-};
 module.exports = {
     initConnection,
     createNamespaceConnection

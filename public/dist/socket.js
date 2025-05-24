@@ -55,6 +55,7 @@ function getRoomInfo(room) {
     namespaceSocket.on("countOfOnlineUsers", count => {
         document.getElementById("online-count").innerText = `online Users:${count}`  
     })
+    getMessages(room)
 }
 
 //get namespaces and rooms and show firs namespace as default
@@ -127,7 +128,7 @@ roomsContainer.addEventListener("click", (event) => {
         roomHeader.appendChild(img);
         roomHeader.appendChild(p);
     }
-    getMessages()
+    
     }
 });
 
@@ -140,31 +141,47 @@ function sendMessage() {
     if(message.trim() == "") {
         return alert("input message cannot be empty")
     }
+    const userId = document.getElementById("userId").value;
     namespaceSocket.emit("newMessage", {
         message,
         roomName,
-        endpoint
+        endpoint,
+        sender: userId
     });
-    const li = stringToHtml(`
-        <li class="message sent">
-          <img src="/uploads/art.JPG" alt="User Profile" class="profile-image" />
-          <span>${message}</span>
-        </li>
-    `);
-    document.querySelector(".messages ul").appendChild(li);
-    //empty messages box here
-    document.querySelector(".input-area input#messageInput").value = "";
-    const messagesElement = document.querySelector("div.messages");
-    messagesElement.scrollTo(0, messagesElement.scrollHeight);
+    namespaceSocket.off("confirmMessage")
+    namespaceSocket.on("confirmMessage", data => {
+        console.log(data.message)
+        const li = stringToHtml(`
+            <li class="${(userId == data.sender)? 'message sent' : 'message received'}">
+              <img src="/uploads/cooking.JPG" alt="User Profile" class="profile-image" />
+              <span>${data.message}</span>
+            </li>
+        `);
+        document.getElementById("message-container").appendChild(li);
+        //empty messages box here
+        document.querySelector(".input-area input#messageInput").value = "";
+        const messagesElement = document.querySelector("div.messages");
+        messagesElement.scrollTo(0, messagesElement.scrollHeight);
+    })
 }
 
-function getMessages() {
-    namespaceSocket.on("confirmMessage", messages => {
-        console.log(messages)
-        for (const message of messages) {
-            
-        }
-    });
+function getMessages(room) {
+    const roomContainer = document.getElementById("message-container");
+    if(roomContainer) {
+        roomContainer.innerHTML = "";
+    }
+    const messages = room.messages;
+    const roomName = document.querySelector(".room-header").getAttribute("roomName");
+    const userId = document.getElementById("userId").value;
+    for (const message of messages) {
+        const li = stringToHtml(`
+            <li class="${(userId == message.sender)? 'message sent' : 'message received'}">
+                <img src="uploads/cooking.JPG" alt="userPic">
+                <span>${message.message}</span>
+            </li>
+        `);
+        document.querySelector(".messages ul").appendChild(li);
+    }
 }
 
 

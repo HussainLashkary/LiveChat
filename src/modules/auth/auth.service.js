@@ -42,7 +42,7 @@ async function checkOtp(mobile, code) {
     const accessToken = await signToken({mobile, id: user._id});
     user.accessToken = accessToken;
     await user.save();
-    return accessToken
+    return {accessToken, user}
 }
 
 async function checkExist(mobile) {
